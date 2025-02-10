@@ -20,12 +20,16 @@ function App() {
       //     password: password,
       //   }),
       // });
+      // // Extract the response as a string
+      // const token = await response.text();
+      // console.log("Token:", token);
 
       const response = await axios.post("/login", {
         username: username,
         password,
       });
-      setAuth(response.data)
+      console.log(response);
+      localStorage.setItem('token', response.data.token)
     } catch (err) {
       console.log(err);
     }

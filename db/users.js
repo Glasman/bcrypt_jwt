@@ -1,4 +1,5 @@
 import { client } from "./client.js";
+import jwt from "jsonwebtoken";
 
 const createUser = async (username, password) => {
   try {
@@ -11,14 +12,25 @@ const createUser = async (username, password) => {
 
 const getUser = async (username, password) => {
   try {
-    const { rows: [ user ] } = await client.query(`
+    const {
+      rows: [user],
+    } = await client.query(`
             SELECT username FROM users
             WHERE username='${username}' AND password='${password}'
             `);
-            console.log(user)
-            return user
-  } catch (error) {
-    console.log(error);
+
+    if (user) {
+      const assignedToken = jwt.sign({ username: user.username }, "secret");
+      return assignedToken;
+    } else {
+      const error = new Error("bad credentials");
+      error.status = 401;
+      throw error;
+    }
+  } catch (err) {
+    const error = new Error("bad credentials");
+    error.status = 401;
+    throw error;
   }
 };
 
