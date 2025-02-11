@@ -8,8 +8,9 @@ function App() {
   const [auth, setAuth] = useState({});
 
   useEffect(() => {
+    console.log("attemptin");
     attemptLoginWithToken();
-  });
+  }, [auth]);
 
   async function logIn(e) {
     e.preventDefault();
@@ -34,6 +35,7 @@ function App() {
       });
       console.log(response);
       localStorage.setItem("token", response.data.token);
+      attemptLoginWithToken();
     } catch (err) {
       console.log(err);
     }
@@ -47,8 +49,15 @@ function App() {
           authorization: token,
         },
       });
-     console.log(response.data)
+      if (JSON.stringify(auth) !== JSON.stringify(response.data)) {
+        setAuth(response.data);
+      }
     }
+  };
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    setAuth({});
   };
 
   return (
@@ -58,7 +67,7 @@ function App() {
       {auth.username ? (
         <>
           <h1>Welcome {auth.username} </h1>
-          <button>Log out</button>
+          <button onClick={logOut}>Log out</button>
         </>
       ) : (
         <>
