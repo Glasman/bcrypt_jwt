@@ -6,11 +6,12 @@ function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     console.log("attemptin");
     attemptLoginWithToken();
-  }, [auth]);
+  }, []);
 
   async function logIn(e) {
     e.preventDefault();
@@ -36,7 +37,10 @@ function App() {
       console.log(response);
       localStorage.setItem("token", response.data.token);
       attemptLoginWithToken();
+      setUsername('')
+      setPassword('')
     } catch (err) {
+      setErrorMessage("Bad credentials");
       console.log(err);
     }
   }
@@ -58,6 +62,9 @@ function App() {
   const logOut = () => {
     localStorage.removeItem("token");
     setAuth({});
+    setErrorMessage('')
+    setUsername('')
+    setPassword('')
   };
 
   return (
@@ -71,6 +78,7 @@ function App() {
         </>
       ) : (
         <>
+          { errorMessage }
           <form onSubmit={logIn}>
             <input
               placeholder="username"
