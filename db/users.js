@@ -15,12 +15,15 @@ const getUser = async (username, password) => {
     const {
       rows: [user],
     } = await client.query(`
-            SELECT username FROM users
+            SELECT id, username FROM users
             WHERE username='${username}' AND password='${password}'
             `);
 
     if (user) {
-      const assignedToken = jwt.sign({ username: user.username }, "secret");
+      const assignedToken = jwt.sign(
+        { id: user.id, username: user.username },
+        "secret"
+      );
       return assignedToken;
     } else {
       const error = new Error("bad credentials");
@@ -34,4 +37,19 @@ const getUser = async (username, password) => {
   }
 };
 
-export { createUser, getUser };
+const getUserByToken = async (token) => {
+  try {
+    const myToken = jwt.verify(token, "secret");
+    const {
+      rows: [user],
+    } = await client.query(`
+      SELECT id, username FROM users
+      WHERE id='${myToken.id}' AND username='${myToken.username}'
+      `);
+    return user;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { createUser, getUser, getUserByToken };

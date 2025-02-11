@@ -1,11 +1,15 @@
 import "./App.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useState({});
+
+  useEffect(() => {
+    attemptLoginWithToken();
+  });
 
   async function logIn(e) {
     e.preventDefault();
@@ -29,11 +33,23 @@ function App() {
         password,
       });
       console.log(response);
-      localStorage.setItem('token', response.data.token)
+      localStorage.setItem("token", response.data.token);
     } catch (err) {
       console.log(err);
     }
   }
+
+  const attemptLoginWithToken = async () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const response = await axios.get("/login", {
+        headers: {
+          authorization: token,
+        },
+      });
+     console.log(response.data)
+    }
+  };
 
   return (
     <>

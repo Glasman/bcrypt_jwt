@@ -1,7 +1,7 @@
 import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
-import { getUser } from "./db/users.js";
+import { createUser, getUser, getUserByToken } from "./db/users.js";
 
 import { client } from "./db/client.js";
 client.connect();
@@ -20,15 +20,24 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "dist/index.html"));
 });
 
+app.get("/login", async(req, res) => {
+  const user = await getUserByToken(req.headers.authorization)
+  res.send(user);
+});
+
 app.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
     const token = await getUser(username, password);
     res.send({ token });
-    // res.send( token ); 
+    // res.send( token );
   } catch (err) {
     next(err);
   }
+});
+
+app.use("*", (req, res) => {
+  res.send(`404 route not found`);
 });
 
 app.use((err, req, res, next) => {
