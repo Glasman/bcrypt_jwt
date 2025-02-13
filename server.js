@@ -2,6 +2,8 @@ import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
 import { createUser, getUser, getUserByToken } from "./db/users.js";
+import 'dotenv/config'
+
 
 import { client } from "./db/client.js";
 client.connect();

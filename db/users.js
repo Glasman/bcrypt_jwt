@@ -18,14 +18,16 @@ const getUser = async (username, password) => {
     const {
       rows: [user],
     } = await client.query(`
-            SELECT id, username FROM users
-            WHERE username='${username}' AND password='${password}'
-            `);
+      SELECT * FROM users
+      WHERE username='${username}'
+      `);
 
-    if (user) {
+    const comparedPassword = await bcrypt.compare(password, user.password);
+
+    if (user && comparedPassword) {
       const assignedToken = jwt.sign(
         { id: user.id, username: user.username },
-        "secret"
+        process.env.secret
       );
       return assignedToken;
     } else {
@@ -42,7 +44,7 @@ const getUser = async (username, password) => {
 
 const getUserByToken = async (token) => {
   try {
-    const myToken = jwt.verify(token, "secret");
+    const myToken = jwt.verify(token, process.env.secret);
     const {
       rows: [user],
     } = await client.query(`
