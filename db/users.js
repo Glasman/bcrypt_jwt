@@ -1,11 +1,14 @@
 import { client } from "./client.js";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 const createUser = async (username, password) => {
   try {
+    const hashedPassword = await bcrypt.hash(password, 5);
+    console.log(hashedPassword);
     await client.query(`
         INSERT INTO users (username, password)
-        VALUES ('${username}', '${password}');
+        VALUES ('${username}', '${hashedPassword}');
         `);
   } catch (error) {}
 };

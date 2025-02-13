@@ -2,6 +2,7 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+
 function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -9,7 +10,6 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    console.log("attemptin");
     attemptLoginWithToken();
   }, []);
 
@@ -34,7 +34,6 @@ function App() {
         username: username,
         password,
       });
-      console.log(response);
       localStorage.setItem("token", response.data.token);
       attemptLoginWithToken();
       setUsername('')

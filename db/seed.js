@@ -1,5 +1,6 @@
 import { client } from "./client.js";
 import { createUser } from "./users.js";
+import bcrypt from "bcrypt";
 
 async function createTables() {
   try {
@@ -7,7 +8,7 @@ async function createTables() {
            CREATE TABLE users (
            id SERIAL PRIMARY KEY,
            username VARCHAR(30) UNIQUE NOT NULL,
-           password VARCHAR(30) NOT NULL
+           password VARCHAR(60) NOT NULL
            );
             `);
   } catch (error) {
@@ -37,7 +38,7 @@ const syncAndSeed = async () => {
 
     await createUser("curly", "curly");
     await createUser("moe", "moe");
-    await createUser("harry", "harry");
+    await createUser("larry", "larry");
     console.log("homies added");
     client.end();
   } catch (error) {
