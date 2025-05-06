@@ -11,11 +11,9 @@ client.connect();
 const app = express();
 app.use(express.json());
 
-// ✅ Correctly define __dirname in an ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Use `path.join()` to ensure cross-platform compatibility
 app.use("/assets", express.static(path.join(__dirname, "dist/assets")));
 
 app.get("/", (req, res) => {
